@@ -18,8 +18,8 @@ const MONGO_URL =
   'mongodb://127.0.0.1:27017';
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'solvion_db';
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 let dbReady = false;
 
@@ -135,11 +135,15 @@ const Message = mongoose.model('Message', messageSchema);
 const Application = mongoose.model('Application', applicationSchema);
 
 async function seedIfNeeded() {
-  await Admin.updateOne(
-    { username: ADMIN_USERNAME },
-    { $set: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } },
-    { upsert: true }
-  );
+  if (ADMIN_USERNAME && ADMIN_PASSWORD) {
+    await Admin.updateOne(
+      { username: ADMIN_USERNAME },
+      { $set: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } },
+      { upsert: true }
+    );
+  } else {
+    console.warn('ADMIN_USERNAME/ADMIN_PASSWORD not set; skipping admin seed.');
+  }
 
   const [jobsCount, benefitsCount, testimonialsCount] = await Promise.all([
     Job.countDocuments({}),

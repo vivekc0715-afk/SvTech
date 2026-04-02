@@ -28,8 +28,8 @@ npm --prefix server install
 MONGO_URL=mongodb://127.0.0.1:27017
 MONGO_DB_NAME=solvion_db
 JWT_SECRET=replace_with_a_strong_secret
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=admin123
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=use_a_strong_password
 ```
 
 3. Start the development server:
