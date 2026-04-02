@@ -302,7 +302,9 @@ async function seedIfNeeded() {
 async function connectAndInit() {
   try {
     if (!dbReady) {
-      await mongoose.connect(`${MONGO_URL}/${MONGO_DB_NAME}`);
+      await mongoose.connect(MONGO_URL, {
+        dbName: MONGO_DB_NAME,
+      });
     }
     await seedIfNeeded();
     dbReady = true;
