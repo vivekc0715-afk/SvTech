@@ -11,7 +11,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'solvion_secret_key';
 app.use(cors());
 app.use(express.json());
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017';
+const MONGO_URL =
+  process.env.MONGO_URL ||
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  'mongodb://127.0.0.1:27017';
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'solvion_db';
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
@@ -309,11 +313,30 @@ async function connectAndInit() {
   }
 }
 
+app.get('/api/health/db', (req, res) => {
+  if (dbReady) {
+    return res.json({
+      ok: true,
+      dbReady: true,
+      dbName: MONGO_DB_NAME,
+    });
+  }
+
+  return res.status(500).json({
+    ok: false,
+    dbReady: false,
+    dbName: MONGO_DB_NAME,
+    error:
+      'Database unavailable. Check Netlify env vars: MONGO_URL (or MONGODB_URI/MONGO_URI) and MONGO_DB_NAME.',
+  });
+});
+
 app.use('/api', (req, res, next) => {
+  if (req.path === '/health/db') return next();
   if (!dbReady) {
     return res.status(500).json({
       error:
-        'Database unavailable. Please start MongoDB and verify MONGO_URL/MONGO_DB_NAME in server/.env.',
+        'Database unavailable. Verify Mongo env vars (MONGO_URL or MONGODB_URI or MONGO_URI) and MONGO_DB_NAME.',
     });
   }
   next();
