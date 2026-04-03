@@ -112,7 +112,7 @@ const Home = () => {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img 
-                  src="/images/story-image.png" 
+                  src="/images/home-hero-new.jpeg" 
                   alt="SolvionTech Office"
                   className="w-full h-auto object-cover"
                 />

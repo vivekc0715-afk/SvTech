@@ -134,7 +134,7 @@ const About = () => {
               className="relative aspect-square rounded-[2.5rem] overflow-hidden group shadow-2xl"
             >
               <img 
-                src="/images/story-image.png" 
+                src="/images/story-image-new.jpeg" 
                 alt="Our Office Culture" 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
