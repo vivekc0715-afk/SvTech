@@ -24,6 +24,16 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 let dbReady = false;
 let dbConnectionPromise = null;
 
+async function forceSeed(req, res) {
+  try {
+    await connectAndInit();
+    await seedIfNeeded(true); // Force flag
+    res.json({ success: true, message: 'Database seeded successfully.' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
 const toApiDoc = (doc) => {
   if (!doc) return null;
   const obj = doc.toObject ? doc.toObject() : doc;
@@ -301,6 +311,18 @@ async function seedIfNeeded() {
           'https://img.rocket.new/generatedImages/rocket_gen_img_1663c79be-1763294482755.png',
       },
     ]);
+    console.log('Successfully seeded database contents.');
+  }
+}
+
+async function seedIfNeeded(force = false) {
+  if (force) {
+    await Service.deleteMany({});
+    await Job.deleteMany({});
+  }
+  const count = await Service.countDocuments({});
+  if (count === 0 || force) {
+    await performSeed();
   }
 }
 
@@ -358,7 +380,7 @@ app.get('/api/health/db', (req, res) => {
 });
 
 app.use('/api', async (req, res, next) => {
-  if (req.path === '/health/db') return next();
+  if (req.path === '/health/db' || req.path === '/admin/seed') return next();
   
   if (!dbReady) {
     try {
@@ -572,5 +594,7 @@ if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY) {
     console.log(`Server is running on port ${port}`);
   });
 }
+
+app.get('/api/admin/seed', forceSeed);
 
 module.exports = app;
