@@ -1,0 +1,48 @@
+{
+  "name": "solviontech-premium-website",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A modern HTML project utilizing Tailwind CSS for building responsive web applications with minimal setup.",
+  "main": "index.html",
+  "dependencies": {
+    "@dhiwise/component-tagger": "^1.0.14",
+    "@netlify/neon": "^0.1.0",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.577.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.1",
+    "serverless-http": "^4.0.0",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-elevation": "^2.0.0",
+    "tailwindcss-fluid-type": "^2.0.7",
+    "three": "^0.183.2"
+  },
+  "scripts": {
+    "build:css": "npx @dhiwise/component-tagger && npx tailwindcss -i ./css/tailwind.css -o ./css/main.css",
+    "watch:css": "npx @dhiwise/component-tagger && npx tailwindcss -i ./css/tailwind.css -o ./css/main.css --watch",
+    "dev": "vite",
+    "server": "npm --prefix server start",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/line-clamp": "^0.1.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.17",
+    "vite": "^8.0.1"
+  },
+  "keywords": []
+}
