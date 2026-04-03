@@ -145,106 +145,110 @@ const Testimonial = mongoose.model('Testimonial', testimonialSchema);
 const Message = mongoose.model('Message', messageSchema);
 const Application = mongoose.model('Application', applicationSchema);
 
-async function seedIfNeeded() {
+async function seedIfNeeded(force = false) {
   if (ADMIN_USERNAME && ADMIN_PASSWORD) {
     await Admin.updateOne(
       { username: ADMIN_USERNAME },
       { $set: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } },
       { upsert: true }
     );
-  } else {
-    console.warn('ADMIN_USERNAME/ADMIN_PASSWORD not set; skipping admin seed.');
   }
 
-  const [jobsCount, benefitsCount, testimonialsCount] = await Promise.all([
+  const [servicesCount, jobsCount, benefitsCount, testimonialsCount] = await Promise.all([
+    Service.countDocuments({}),
     Job.countDocuments({}),
     Benefit.countDocuments({}),
     Testimonial.countDocuments({}),
   ]);
 
-  // Services are always re-seeded
-  await Service.deleteMany({});
-  await Service.insertMany([
-    {
-      title: 'AI Integration and Automation',
-      category: 'ai',
-      description:
-        'Seamlessly integrate cutting-edge AI technologies into your existing systems. From machine learning models to natural language processing, we automate complex workflows and enhance decision-making capabilities.',
-      icon_name: 'Cpu',
-      timeline: '8-16 weeks',
-      image_url:
-        'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'Custom Software Development',
-      category: 'development',
-      description:
-        'Tailored software solutions built with modern technologies to meet your unique business requirements. We deliver scalable, maintainable applications that grow with your business needs.',
-      icon_name: 'Code',
-      timeline: '12-24 weeks',
-      image_url: 'https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'Data Analytics and BI',
-      category: 'cloud',
-      description:
-        'Transform raw data into actionable insights with advanced analytics and visualization tools. We help you make informed decisions through comprehensive business intelligence solutions.',
-      icon_name: 'BarChart',
-      timeline: '6-12 weeks',
-      image_url:
-        'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'Cloud Migration and Optimization',
-      category: 'cloud',
-      description:
-        'Migrate your applications and data to the cloud with our expert guidance. We optimize your cloud infrastructure for performance, security, and cost-effectiveness.',
-      icon_name: 'Cloud',
-      timeline: '8-16 weeks',
-      image_url:
-        'https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'Mobile App Development',
-      category: 'development',
-      description:
-        'We build native and cross-platform mobile apps for iOS and Android. Our apps are designed to be user-friendly, performant, and scalable.',
-      icon_name: 'Smartphone',
-      timeline: '12-24 weeks',
-      image_url: 'https://images.pexels.com/photos/1749303/pexels-photo-1749303.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'Cybersecurity Solution',
-      category: 'security',
-      description:
-        'Protect your business from cyber threats with our comprehensive security solutions. We offer a range of services, including penetration testing, vulnerability assessments, and security audits.',
-      icon_name: 'Shield',
-      timeline: '6-12 weeks',
-      image_url:
-        'https://images.pexels.com/photos/5380642/pexels-photo-5380642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'Digital Marketing',
-      category: 'marketing',
-      description:
-        'We help you reach your target audience and grow your business with our digital marketing services. We offer a range of services, including SEO, content marketing, and social media marketing.',
-      icon_name: 'Megaphone',
-      timeline: '4-8 weeks',
-      image_url:
-        'https://images.pexels.com/photos/6476587/pexels-photo-6476587.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-    {
-      title: 'SEO',
-      category: 'marketing',
-      description:
-        'Improve your search engine rankings and drive more traffic to your website with our SEO services. We offer a range of services, including keyword research, on-page optimization, and link building.',
-      icon_name: 'Search',
-      timeline: '4-8 weeks',
-      image_url: 'https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    },
-  ]);
+  if (servicesCount === 0 || force) {
+    await Service.deleteMany({});
+    await Service.insertMany([
+      {
+        title: 'AI Integration and Automation',
+        category: 'ai',
+        description:
+          'Seamlessly integrate cutting-edge AI technologies into your existing systems. From machine learning models to natural language processing, we automate complex workflows and enhance decision-making capabilities.',
+        icon_name: 'Cpu',
+        timeline: '8-16 weeks',
+        image_url:
+          'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'Custom Software Development',
+        category: 'development',
+        description:
+          'Tailored software solutions built with modern technologies to meet your unique business requirements. We deliver scalable, maintainable applications that grow with your business needs.',
+        icon_name: 'Code',
+        timeline: '12-24 weeks',
+        image_url:
+          'https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'Data Analytics and BI',
+        category: 'cloud',
+        description:
+          'Transform raw data into actionable insights with advanced analytics and visualization tools. We help you make informed decisions through comprehensive business intelligence solutions.',
+        icon_name: 'BarChart',
+        timeline: '6-12 weeks',
+        image_url:
+          'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'Cloud Migration and Optimization',
+        category: 'cloud',
+        description:
+          'Migrate your applications and data to the cloud with our expert guidance. We optimize your cloud infrastructure for performance, security, and cost-effectiveness.',
+        icon_name: 'Cloud',
+        timeline: '8-16 weeks',
+        image_url:
+          'https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'Mobile App Development',
+        category: 'development',
+        description:
+          'We build native and cross-platform mobile apps for iOS and Android. Our apps are designed to be user-friendly, performant, and scalable.',
+        icon_name: 'Smartphone',
+        timeline: '12-24 weeks',
+        image_url:
+          'https://images.pexels.com/photos/1749303/pexels-photo-1749303.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'Cybersecurity Solution',
+        category: 'security',
+        description:
+          'Protect your business from cyber threats with our comprehensive security solutions. We offer a range of services, including penetration testing, vulnerability assessments, and security audits.',
+        icon_name: 'Shield',
+        timeline: '6-12 weeks',
+        image_url:
+          'https://images.pexels.com/photos/5380642/pexels-photo-5380642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'Digital Marketing',
+        category: 'marketing',
+        description:
+          'We help you reach your target audience and grow your business with our digital marketing services. We offer a range of services, including SEO, content marketing, and social media marketing.',
+        icon_name: 'Megaphone',
+        timeline: '4-8 weeks',
+        image_url:
+          'https://images.pexels.com/photos/6476587/pexels-photo-6476587.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+      {
+        title: 'SEO',
+        category: 'marketing',
+        description:
+          'Improve your search engine rankings and drive more traffic to your website with our SEO services. We offer a range of services, including keyword research, on-page optimization, and link building.',
+        icon_name: 'Search',
+        timeline: '4-8 weeks',
+        image_url:
+          'https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      },
+    ]);
+  }
 
-  if (jobsCount === 0) {
+  if (jobsCount === 0 || force) {
+    if (force) await Job.deleteMany({});
     await Job.insertMany([
       {
         title: 'Expert AI Engineer',
@@ -283,7 +287,8 @@ async function seedIfNeeded() {
     ]);
   }
 
-  if (benefitsCount === 0) {
+  if (benefitsCount === 0 || force) {
+    if (force) await Benefit.deleteMany({});
     await Benefit.insertMany([
       {
         icon_name: 'Cpu',
@@ -300,7 +305,8 @@ async function seedIfNeeded() {
     ]);
   }
 
-  if (testimonialsCount === 0) {
+  if (testimonialsCount === 0 || force) {
+    if (force) await Testimonial.deleteMany({});
     await Testimonial.insertMany([
       {
         quote:
@@ -312,17 +318,6 @@ async function seedIfNeeded() {
       },
     ]);
     console.log('Successfully seeded database contents.');
-  }
-}
-
-async function seedIfNeeded(force = false) {
-  if (force) {
-    await Service.deleteMany({});
-    await Job.deleteMany({});
-  }
-  const count = await Service.countDocuments({});
-  if (count === 0 || force) {
-    await performSeed();
   }
 }
 
