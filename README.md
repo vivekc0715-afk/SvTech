@@ -1,82 +1,85 @@
-# HTML
+# SolvionTech
 
-A modern HTML project utilizing Tailwind CSS for building responsive web applications with minimal setup.
+React + Vite frontend with an Express/Mongoose backend.
 
-## 🚀 Features
+## Features
 
-- **HTML5** - Modern HTML structure with best practices
-- **Tailwind CSS** - Utility-first CSS framework for rapid UI development
-- **Custom Components** - Pre-built component classes for buttons and containers
-- **NPM Scripts** - Easy-to-use commands for development and building
-- **Responsive Design** - Mobile-first approach for all screen sizes
+- React frontend powered by Vite
+- Express API server with MongoDB (Mongoose)
+- Netlify function wrapper for `/api/*`
+- Tailwind-based UI
 
-## 📋 Prerequisites
+## Prerequisites
 
-- Node.js (v12.x or higher)
-- npm or yarn
+- Node.js 18+
+- npm
+- MongoDB (local service if using Compass)
 
-## 🛠️ Installation
+## Local setup
 
 1. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
+npm --prefix server install
 ```
 
-2. Start the development server:
+2. Create `server/.env`:
+```env
+MONGO_URL=mongodb://127.0.0.1:27017
+MONGO_DB_NAME=solvion_db
+JWT_SECRET=replace_with_a_strong_secret
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=use_a_strong_password
+```
+
+3. Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-## 📁 Project Structure
-
-```
-html_app/
-├── css/
-│   ├── tailwind.css   # Tailwind source file with custom utilities
-│   └── main.css       # Compiled CSS (generated)
-├── pages/             # HTML pages
-├── index.html         # Main entry point
-├── package.json       # Project dependencies and scripts
-└── tailwind.config.js # Tailwind CSS configuration
-```
-
-## 🎨 Styling
-
-This project uses Tailwind CSS for styling. Custom utility classes include:
-
-
-## 🧩 Customization
-
-To customize the Tailwind configuration, edit the `tailwind.config.js` file:
-
-
-## 📦 Build for Production
-
-Build the CSS for production:
-
+4. Verify API health:
 ```bash
-npm run build:css
-# or
-yarn build:css
+http://127.0.0.1:5000/api/health/db
 ```
 
-## 📱 Responsive Design
+## Project structure
 
-The app is built with responsive design using Tailwind CSS breakpoints:
+```
+solvion/
+  src/                  # React frontend
+  server/               # Express + Mongoose API
+  netlify/functions/    # Netlify serverless entry
+  netlify.toml          # Redirects + build config
+```
 
-- `sm`: 640px and up
-- `md`: 768px and up
-- `lg`: 1024px and up
-- `xl`: 1280px and up
-- `2xl`: 1536px and up
+## Deploying while using MongoDB Compass (local DB)
 
-## 🙏 Acknowledgments
+Netlify cannot connect directly to your local MongoDB (`127.0.0.1`). If you want to keep your Compass/local database, expose your local backend using a tunnel and point Netlify frontend to that URL.
 
+1. Start local backend:
+```bash
+npm --prefix server run dev
+```
 
-- Powered by HTML and Tailwind CSS
+2. Start a tunnel (example with ngrok):
+```bash
+ngrok http 5000
+```
 
+3. Copy your HTTPS forwarding URL, for example:
+```text
+https://abcd-12-34-56-78.ngrok-free.app
+```
 
+4. In Netlify environment variables, set:
+```env
+VITE_API_BASE_URL=https://abcd-12-34-56-78.ngrok-free.app
+```
+
+5. Redeploy the Netlify site.
+
+6. Verify:
+- `https://your-netlify-site/api/health/db`
+- `https://your-netlify-site/api/services`
+
+If the tunnel is stopped or URL changes, update `VITE_API_BASE_URL` and redeploy again.

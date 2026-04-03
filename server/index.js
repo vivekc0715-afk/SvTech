@@ -11,11 +11,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'solvion_secret_key';
 app.use(cors());
 app.use(express.json());
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017';
+const MONGO_URL =
+  process.env.MONGO_URL ||
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  'mongodb://127.0.0.1:27017';
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'solvion_db';
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 let dbReady = false;
 
@@ -131,11 +135,15 @@ const Message = mongoose.model('Message', messageSchema);
 const Application = mongoose.model('Application', applicationSchema);
 
 async function seedIfNeeded() {
-  await Admin.updateOne(
-    { username: ADMIN_USERNAME },
-    { $set: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } },
-    { upsert: true }
-  );
+  if (ADMIN_USERNAME && ADMIN_PASSWORD) {
+    await Admin.updateOne(
+      { username: ADMIN_USERNAME },
+      { $set: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } },
+      { upsert: true }
+    );
+  } else {
+    console.warn('ADMIN_USERNAME/ADMIN_PASSWORD not set; skipping admin seed.');
+  }
 
   const [jobsCount, benefitsCount, testimonialsCount] = await Promise.all([
     Job.countDocuments({}),
@@ -300,8 +308,6 @@ async function connectAndInit() {
     if (!dbReady) {
       await mongoose.connect(MONGO_URL, {
         dbName: MONGO_DB_NAME,
-        retryWrites: true,
-        w: 'majority',
       });
     }
     await seedIfNeeded();
@@ -313,11 +319,30 @@ async function connectAndInit() {
   }
 }
 
+app.get('/api/health/db', (req, res) => {
+  if (dbReady) {
+    return res.json({
+      ok: true,
+      dbReady: true,
+      dbName: MONGO_DB_NAME,
+    });
+  }
+
+  return res.status(500).json({
+    ok: false,
+    dbReady: false,
+    dbName: MONGO_DB_NAME,
+    error:
+      'Database unavailable. Check Netlify env vars: MONGO_URL (or MONGODB_URI/MONGO_URI) and MONGO_DB_NAME.',
+  });
+});
+
 app.use('/api', (req, res, next) => {
+  if (req.path === '/health/db') return next();
   if (!dbReady) {
     return res.status(500).json({
       error:
-        'Database unavailable. Please start MongoDB and verify MONGO_URL/MONGO_DB_NAME in server/.env.',
+        'Database unavailable. Verify Mongo env vars (MONGO_URL or MONGODB_URI or MONGO_URI) and MONGO_DB_NAME.',
     });
   }
   next();
