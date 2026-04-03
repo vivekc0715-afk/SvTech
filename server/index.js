@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'solvion_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'SECRET_FALLBACK';
 
 app.use(cors());
 app.use(express.json());
@@ -16,7 +16,7 @@ const MONGO_URL =
   process.env.MONGODB_URI ||
   process.env.MONGO_URI ||
   'mongodb://127.0.0.1:27017';
-const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'solvion_db';
+const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'app_db';
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
