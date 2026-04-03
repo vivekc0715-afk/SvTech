@@ -320,7 +320,8 @@ async function connectAndInit() {
       console.log('Attempting to connect to MongoDB...');
       await mongoose.connect(MONGO_URL, {
         dbName: MONGO_DB_NAME,
-        serverSelectionTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 10000,
       });
 
       await seedIfNeeded();
@@ -351,8 +352,8 @@ app.get('/api/health/db', (req, res) => {
     ok: false,
     dbReady: false,
     dbName: MONGO_DB_NAME,
-    error:
-      'Database unavailable. Check Netlify env vars: MONGO_URL (or MONGODB_URI/MONGO_URI) and MONGO_DB_NAME.',
+    error: 'Database connection is not ready yet.',
+    details: 'The connection process is still running or failed. Check Netlify logs for more info.',
   });
 });
 
