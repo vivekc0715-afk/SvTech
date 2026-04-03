@@ -134,6 +134,18 @@ const FALLBACK_BENEFITS = [
     icon_name: 'Rocket',
     title: 'Competitive Pay',
     description: 'Industry-leading salaries and excellence rewards.',
+  },
+  {
+    id: 'b3',
+    icon_name: 'Globe',
+    title: 'Global Projects',
+    description: 'Collaborate with international clients and expand your global perspective.',
+  },
+  {
+    id: 'b4',
+    icon_name: 'Users',
+    title: 'Inclusive Culture',
+    description: "Be part of a diverse and inclusive workplace where everyone's voice is heard.",
   }
 ];
 

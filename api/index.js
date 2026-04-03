@@ -298,10 +298,10 @@ app.get('/api/health/db', (req, res) => {
 
 app.use('/api', async (req, res, next) => {
   if (req.path === '/health/db' || !req.path.startsWith('/admin')) {
-    if (!dbReady) connectAndInit().catch(() => {}); 
+    if (!dbReady) connectAndInit().catch(() => { });
     return next();
   }
-  
+
   if (!dbReady) {
     try {
       await connectAndInit();

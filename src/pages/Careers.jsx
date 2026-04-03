@@ -158,7 +158,6 @@ const Careers = () => {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">Why Work <span className="gradient-text">With Us?</span></h2>
           </div>
-          {error && <div className="text-center py-4 bg-red-50 text-red-600 rounded-lg mb-8"><p>{error}</p></div>}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((b, i) => {
               const IconComponent = iconMap[b.icon_name] || Cpu;
