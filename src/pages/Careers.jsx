@@ -6,39 +6,7 @@ import {
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { API_BASE_URL } from '../utils/api'
-
-const defaultBenefits = [
-  {
-    icon_name: 'Cpu',
-    title: 'AI-Powered Systems',
-    description: 'Work with the latest AI technologies and stay ahead of the curve with premium resources.'
-  },
-  {
-    icon_name: 'Rocket',
-    title: 'Competitive Pay',
-    description: 'Industry-leading salaries, performance bonuses, and equity options for excellence.'
-  },
-  {
-    icon_name: 'GraduationCap',
-    title: 'Continuous Learning',
-    description: 'Dedicated learning budgets, certifications, and mentorship programs for your growth.'
-  },
-  {
-    icon_name: 'Heart',
-    title: 'Work-Life Balance',
-    description: 'Flexible hours, remote-first options, and unlimited PTO for sustainable productivity.'
-  },
-  {
-    icon_name: 'Users',
-    title: 'Collaborative Culture',
-    description: 'A supportive environment with regular team events and open, honest communication.'
-  },
-  {
-    icon_name: 'Globe',
-    title: 'Health & Wellness',
-    description: 'Comprehensive health insurance and mental health support for your total well-being.'
-  }
-]
+import { FALLBACK_BENEFITS, FALLBACK_JOBS } from '../data/fallbackContent'
 
 const Careers = () => {
   const [filter, setFilter] = useState('all')
@@ -55,7 +23,7 @@ const Careers = () => {
   const [appSubmitError, setAppSubmitError] = useState('')
   const [appSubmitting, setAppSubmitting] = useState(false)
   const [jobs, setJobs] = useState([])
-  const [benefits, setBenefits] = useState(defaultBenefits)
+  const [benefits, setBenefits] = useState(FALLBACK_BENEFITS)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -68,7 +36,8 @@ const Careers = () => {
       })
       .catch(err => {
         console.error('Error fetching careers data:', err)
-        setError('Failed to load careers data. Please try again later.')
+        setJobs(FALLBACK_JOBS)
+        setError('Live careers data is unavailable. Showing fallback jobs.')
         setLoading(false)
       })
   }, [])

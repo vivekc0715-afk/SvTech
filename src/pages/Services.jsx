@@ -7,6 +7,7 @@ import {
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { API_BASE_URL } from '../utils/api'
+import { FALLBACK_SERVICES } from '../data/fallbackContent'
 
 const Counter = ({ target, duration = 2, suffix = "" }) => {
   const [count, setCount] = useState(0)
@@ -50,7 +51,8 @@ const Services = () => {
       })
       .catch(err => {
         console.error('Error fetching services:', err)
-        setError('Could not load services.')
+        setAllServices(FALLBACK_SERVICES)
+        setError('Live services are unavailable right now. Showing fallback content.')
         setLoading(false)
       })
   }, [])
