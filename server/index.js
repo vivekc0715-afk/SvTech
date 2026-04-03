@@ -22,6 +22,7 @@ const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 let dbReady = false;
+let dbConnectionPromise = null;
 
 const toApiDoc = (doc) => {
   if (!doc) return null;
@@ -304,19 +305,37 @@ async function seedIfNeeded() {
 }
 
 async function connectAndInit() {
-  try {
-    if (!dbReady) {
+  if (dbReady) return;
+  if (dbConnectionPromise) return dbConnectionPromise;
+
+  dbConnectionPromise = (async () => {
+    try {
+      if (!MONGO_URL || MONGO_URL === 'mongodb://127.0.0.1:27017') {
+        const isNetlify = !!process.env.NETLIFY;
+        if (isNetlify) {
+          throw new Error('MONGO_URL not set in Netlify environment variables.');
+        }
+      }
+
+      console.log('Attempting to connect to MongoDB...');
       await mongoose.connect(MONGO_URL, {
         dbName: MONGO_DB_NAME,
+        serverSelectionTimeoutMS: 5000,
       });
+
+      await seedIfNeeded();
+      dbReady = true;
+      console.log(`Successfully connected to MongoDB via Mongoose (${MONGO_DB_NAME}).`);
+    } catch (err) {
+      dbReady = false;
+      console.error('MongoDB/Mongoose connection/init failed:', err?.message || err);
+      throw err;
+    } finally {
+      dbConnectionPromise = null;
     }
-    await seedIfNeeded();
-    dbReady = true;
-    console.log(`Successfully connected to MongoDB via Mongoose (${MONGO_DB_NAME}).`);
-  } catch (err) {
-    dbReady = false;
-    console.error('MongoDB/Mongoose connection/init failed:', err?.message || err);
-  }
+  })();
+
+  return dbConnectionPromise;
 }
 
 app.get('/api/health/db', (req, res) => {
@@ -337,13 +356,24 @@ app.get('/api/health/db', (req, res) => {
   });
 });
 
-app.use('/api', (req, res, next) => {
+app.use('/api', async (req, res, next) => {
   if (req.path === '/health/db') return next();
+  
   if (!dbReady) {
-    return res.status(500).json({
-      error:
-        'Database unavailable. Verify Mongo env vars (MONGO_URL or MONGODB_URI or MONGO_URI) and MONGO_DB_NAME.',
-    });
+    try {
+      await connectAndInit();
+    } catch (err) {
+      return res.status(500).json({
+        error: 'Database connection failed',
+        details: err.message,
+        hint: 'Check Netlify environment variables (MONGO_URL, MONGO_DB_NAME) and MongoDB Atlas IP Whitelist (0.0.0.0/0).',
+        env_state: {
+          has_url: !!process.env.MONGO_URL || !!process.env.MONGODB_URI || !!process.env.MONGO_URI,
+          url_preview: (process.env.MONGO_URL || process.env.MONGODB_URI || process.env.MONGO_URI || '').substring(0, 15) + '...',
+          db_name: MONGO_DB_NAME,
+        }
+      });
+    }
   }
   next();
 });
