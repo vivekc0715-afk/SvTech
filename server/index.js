@@ -21,19 +21,6 @@ const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'app_d
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-let dbReady = false;
-let dbConnectionPromise = null;
-
-async function forceSeed(req, res) {
-  try {
-    await connectAndInit();
-    await seedIfNeeded(true); // Force flag
-    res.json({ success: true, message: 'Database seeded successfully.' });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-}
-
 const toApiDoc = (doc) => {
   if (!doc) return null;
   const obj = doc.toObject ? doc.toObject() : doc;
@@ -60,7 +47,7 @@ const normalizeJsonField = (value) => {
 const adminSchema = new mongoose.Schema(
   {
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, // plaintext for now to match existing behavior
+    password: { type: String, required: true },
   },
   { collection: 'admins' }
 );
@@ -145,181 +132,8 @@ const Testimonial = mongoose.model('Testimonial', testimonialSchema);
 const Message = mongoose.model('Message', messageSchema);
 const Application = mongoose.model('Application', applicationSchema);
 
-async function seedIfNeeded(force = false) {
-  if (ADMIN_USERNAME && ADMIN_PASSWORD) {
-    await Admin.updateOne(
-      { username: ADMIN_USERNAME },
-      { $set: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD } },
-      { upsert: true }
-    );
-  }
-
-  const [servicesCount, jobsCount, benefitsCount, testimonialsCount] = await Promise.all([
-    Service.countDocuments({}),
-    Job.countDocuments({}),
-    Benefit.countDocuments({}),
-    Testimonial.countDocuments({}),
-  ]);
-
-  if (servicesCount === 0 || force) {
-    await Service.deleteMany({});
-    await Service.insertMany([
-      {
-        title: 'AI Integration and Automation',
-        category: 'ai',
-        description:
-          'Seamlessly integrate cutting-edge AI technologies into your existing systems. From machine learning models to natural language processing, we automate complex workflows and enhance decision-making capabilities.',
-        icon_name: 'Cpu',
-        timeline: '8-16 weeks',
-        image_url:
-          'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'Custom Software Development',
-        category: 'development',
-        description:
-          'Tailored software solutions built with modern technologies to meet your unique business requirements. We deliver scalable, maintainable applications that grow with your business needs.',
-        icon_name: 'Code',
-        timeline: '12-24 weeks',
-        image_url:
-          'https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'Data Analytics and BI',
-        category: 'cloud',
-        description:
-          'Transform raw data into actionable insights with advanced analytics and visualization tools. We help you make informed decisions through comprehensive business intelligence solutions.',
-        icon_name: 'BarChart',
-        timeline: '6-12 weeks',
-        image_url:
-          'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'Cloud Migration and Optimization',
-        category: 'cloud',
-        description:
-          'Migrate your applications and data to the cloud with our expert guidance. We optimize your cloud infrastructure for performance, security, and cost-effectiveness.',
-        icon_name: 'Cloud',
-        timeline: '8-16 weeks',
-        image_url:
-          'https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'Mobile App Development',
-        category: 'development',
-        description:
-          'We build native and cross-platform mobile apps for iOS and Android. Our apps are designed to be user-friendly, performant, and scalable.',
-        icon_name: 'Smartphone',
-        timeline: '12-24 weeks',
-        image_url:
-          'https://images.pexels.com/photos/1749303/pexels-photo-1749303.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'Cybersecurity Solution',
-        category: 'security',
-        description:
-          'Protect your business from cyber threats with our comprehensive security solutions. We offer a range of services, including penetration testing, vulnerability assessments, and security audits.',
-        icon_name: 'Shield',
-        timeline: '6-12 weeks',
-        image_url:
-          'https://images.pexels.com/photos/5380642/pexels-photo-5380642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'Digital Marketing',
-        category: 'marketing',
-        description:
-          'We help you reach your target audience and grow your business with our digital marketing services. We offer a range of services, including SEO, content marketing, and social media marketing.',
-        icon_name: 'Megaphone',
-        timeline: '4-8 weeks',
-        image_url:
-          'https://images.pexels.com/photos/6476587/pexels-photo-6476587.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-      {
-        title: 'SEO',
-        category: 'marketing',
-        description:
-          'Improve your search engine rankings and drive more traffic to your website with our SEO services. We offer a range of services, including keyword research, on-page optimization, and link building.',
-        icon_name: 'Search',
-        timeline: '4-8 weeks',
-        image_url:
-          'https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      },
-    ]);
-  }
-
-  if (jobsCount === 0 || force) {
-    if (force) await Job.deleteMany({});
-    await Job.insertMany([
-      {
-        title: 'Expert AI Engineer',
-        category: 'engineering',
-        type: 'Full-time',
-        location: 'Remote',
-        posted_date: '2 days ago',
-        description:
-          'Lead the development of cutting-edge AI solutions using deep learning and neural networks.',
-        requirements: [
-          '3+ years experience in AI/ML development',
-          'Proficiency in Python, TensorFlow, PyTorch',
-        ],
-        responsibilities: [
-          'Design and implement AI/ML solutions',
-          'Lead technical architecture decisions',
-        ],
-      },
-      {
-        title: 'Full Stack Developer',
-        category: 'engineering',
-        type: 'Full-time',
-        location: 'Hybrid / Bhubaneswar',
-        posted_date: '5 days ago',
-        description:
-          'Build scalable web applications using modern frameworks and cutting-edge tech.',
-        requirements: [
-          '3+ years of full-stack development experience',
-          'Proficiency in React, Node.js, and databases',
-        ],
-        responsibilities: [
-          'Develop and maintain web applications',
-          'Write clean, maintainable code',
-        ],
-      },
-    ]);
-  }
-
-  if (benefitsCount === 0 || force) {
-    if (force) await Benefit.deleteMany({});
-    await Benefit.insertMany([
-      {
-        icon_name: 'Cpu',
-        title: 'AI-Powered Systems',
-        description:
-          'Work with the latest AI technologies and stay ahead of the curve with premium resources.',
-      },
-      {
-        icon_name: 'Rocket',
-        title: 'Competitive Pay',
-        description:
-          'Industry-leading salaries, performance bonuses, and equity options for excellence.',
-      },
-    ]);
-  }
-
-  if (testimonialsCount === 0 || force) {
-    if (force) await Testimonial.deleteMany({});
-    await Testimonial.insertMany([
-      {
-        quote:
-          'SolvionTech built the BB Chhatoi website with stunning design, smooth performance, reliable functionality, and seamless navigation, delivering powerful digital presence that exceeded.',
-        author: 'Mamata Maharana',
-        role: 'Principal, BB Chhatoi',
-        image_url:
-          'https://img.rocket.new/generatedImages/rocket_gen_img_1663c79be-1763294482755.png',
-      },
-    ]);
-    console.log('Successfully seeded database contents.');
-  }
-}
+let dbReady = false;
+let dbConnectionPromise = null;
 
 async function connectAndInit() {
   if (dbReady) return;
@@ -327,13 +141,6 @@ async function connectAndInit() {
 
   dbConnectionPromise = (async () => {
     try {
-      if (!MONGO_URL || MONGO_URL === 'mongodb://127.0.0.1:27017') {
-        const isNetlify = !!process.env.NETLIFY;
-        if (isNetlify) {
-          throw new Error('MONGO_URL not set in Netlify environment variables.');
-        }
-      }
-
       console.log('Attempting to connect to MongoDB...');
       await mongoose.connect(MONGO_URL, {
         dbName: MONGO_DB_NAME,
@@ -341,7 +148,6 @@ async function connectAndInit() {
         connectTimeoutMS: 10000,
       });
 
-      await seedIfNeeded();
       dbReady = true;
       console.log(`Successfully connected to MongoDB via Mongoose (${MONGO_DB_NAME}).`);
     } catch (err) {
@@ -589,7 +395,5 @@ if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY) {
     console.log(`Server is running on port ${port}`);
   });
 }
-
-app.get('/api/admin/seed', forceSeed);
 
 module.exports = app;
