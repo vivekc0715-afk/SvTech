@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config();
 
 const app = express();
@@ -307,13 +309,19 @@ app.get('/api/health/db', (req, res) => {
     });
   }
 
-  return res.status(500).json({
+  const details = lastDbError || 'The connection process is still running or failed. Check deployment env vars and logs.';
+  const payload = {
     ok: false,
     dbReady: false,
     dbName: MONGO_DB_NAME,
     error: 'Database connection is not ready yet.',
-    details: lastDbError || 'The connection process is still running or failed. Check deployment env vars and logs.',
-  });
+    details,
+  };
+  if (/bad auth|authentication failed/i.test(details)) {
+    payload.hint =
+      'Atlas rejected the database username or password in your connection string. Reset the database user password in MongoDB Atlas, paste the new SRV URI into MONGO_URL (or MONGODB_URI), and URL-encode special characters in the password.';
+  }
+  return res.status(500).json(payload);
 });
 
 app.use('/api', async (req, res, next) => {
