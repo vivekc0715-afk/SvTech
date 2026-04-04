@@ -18,6 +18,61 @@ const MONGO_URL =
   'mongodb://127.0.0.1:27017';
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || process.env.DB_NAME || 'solvion_db';
 
+// #region agent log
+function __agentMongoHostHint(uri) {
+  if (!uri || typeof uri !== 'string') return { empty: true };
+  const isSrv = uri.startsWith('mongodb+srv://');
+  const at = uri.indexOf('@');
+  let host = 'unparsed';
+  if (at !== -1) {
+    const rest = uri.slice(at + 1);
+    host = rest.split(/[/?]/)[0] || 'unparsed';
+  } else if (uri.includes('127.0.0.1')) host = '127.0.0.1';
+  return {
+    isSrv,
+    host,
+    isDefaultLocal: uri.includes('127.0.0.1'),
+    hasPlaceholder: uri.includes('<') || uri.includes('>'),
+    len: uri.length,
+  };
+}
+function __agentDbDebugLog(payload) {
+  fetch('http://127.0.0.1:7626/ingest/aa19aa1b-6fac-4ffc-8a0f-5448e96c070e', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8f474f' },
+    body: JSON.stringify({
+      sessionId: '8f474f',
+      timestamp: Date.now(),
+      ...payload,
+    }),
+  }).catch(() => {});
+}
+{
+  const src = process.env.MONGO_URL
+    ? 'MONGO_URL'
+    : process.env.MONGODB_URI
+      ? 'MONGODB_URI'
+      : process.env.MONGO_URI
+        ? 'MONGO_URI'
+        : 'default_local';
+  __agentDbDebugLog({
+    location: 'server/index.js:env',
+    message: 'mongo env resolution',
+    hypothesisId: 'H1',
+    runId: 'pre-fix',
+    data: {
+      urlSource: src,
+      dbName: MONGO_DB_NAME,
+      cwd: process.cwd(),
+      __dirname,
+      hostHint: __agentMongoHostHint(MONGO_URL),
+      netlify: !!process.env.NETLIFY,
+      nodeEnv: process.env.NODE_ENV || '',
+    },
+  });
+}
+// #endregion
+
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
@@ -270,6 +325,15 @@ async function connectAndInit() {
 
   dbConnectionPromise = (async () => {
     try {
+      // #region agent log
+      __agentDbDebugLog({
+        location: 'server/index.js:connectAndInit',
+        message: 'mongoose.connect attempt',
+        hypothesisId: 'H3',
+        runId: 'pre-fix',
+        data: { hostHint: __agentMongoHostHint(MONGO_URL), dbName: MONGO_DB_NAME },
+      });
+      // #endregion
       if (MONGO_URL.includes('<') || MONGO_URL.includes('>')) {
         throw new Error('MONGO_URL appears to contain placeholder values. Set the full MongoDB Atlas connection string.');
       }
@@ -285,10 +349,33 @@ async function connectAndInit() {
       dbReady = true;
       lastDbError = '';
       console.log(`Successfully connected to MongoDB via Mongoose (${MONGO_DB_NAME}).`);
+      // #region agent log
+      __agentDbDebugLog({
+        location: 'server/index.js:connectAndInit',
+        message: 'mongoose.connect success',
+        hypothesisId: 'H4',
+        runId: 'pre-fix',
+        data: { dbName: MONGO_DB_NAME, hostHint: __agentMongoHostHint(MONGO_URL) },
+      });
+      // #endregion
     } catch (err) {
       dbReady = false;
       lastDbError = err?.message || String(err);
       console.error('MongoDB/Mongoose connection/init failed:', lastDbError);
+      // #region agent log
+      __agentDbDebugLog({
+        location: 'server/index.js:connectAndInit',
+        message: 'mongoose.connect failed',
+        hypothesisId: 'H2',
+        runId: 'pre-fix',
+        data: {
+          errName: err?.name,
+          errMessage: lastDbError,
+          hostHint: __agentMongoHostHint(MONGO_URL),
+          dbName: MONGO_DB_NAME,
+        },
+      });
+      // #endregion
       throw err;
     } finally {
       dbConnectionPromise = null;
@@ -334,7 +421,9 @@ app.use('/api', async (req, res, next) => {
   next();
 });
 
-connectAndInit();
+void connectAndInit().catch(() => {
+  // lastDbError is set inside connectAndInit; avoid crashing the process on Atlas/auth errors.
+});
 
 const authenticateAdmin = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
