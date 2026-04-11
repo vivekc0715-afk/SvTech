@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
-import { Cpu, Code, BarChart, Cloud, Smartphone, Shield, Zap, ChevronRight, Plus } from 'lucide-react'
+import { Cpu, Code, BarChart, Cloud, Smartphone, Shield, Zap, ChevronRight, Plus, Megaphone, Search, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const services = [
@@ -44,6 +44,27 @@ const services = [
     desc: 'Comprehensive security solutions to protect your digital assets, data, and infrastructure from evolving cyber threats.',
     icon: Shield,
     features: ['Threat Assessment', 'Secure Coding', 'Compliance Audits'],
+    color: '#60a5fa'
+  },
+  {
+    title: 'Digital Marketing',
+    desc: 'AI-powered marketing campaigns that precisely target your ideal audience and maximize ROI through intelligent automation.',
+    icon: Megaphone,
+    features: ['Targeted Campaigns', 'AI Content Strategy', 'Conversion Tracking'],
+    color: '#2563eb'
+  },
+  {
+    title: 'SEO Optimization',
+    desc: 'Smart SEO strategies utilizing AI to predict trends, optimize content, and dominate search rankings for long-term growth.',
+    icon: Search,
+    features: ['AI Keyword Analysis', 'Semantic SEO', 'Competitor Insights'],
+    color: '#3b82f6'
+  },
+  {
+    title: 'Website Audit',
+    desc: 'Deep-dive technical audits using AI to uncover performance bottlenecks, security vulnerabilities, and UX improvements.',
+    icon: FileText,
+    features: ['Core Web Vitals', 'AI Accessibility Check', 'Security Analysis'],
     color: '#60a5fa'
   }
 ]
@@ -149,9 +170,9 @@ const ServiceCard = ({ service, index }) => {
           <motion.div 
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-10 text-primary relative shadow-inner"
+            className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-10 text-primary relative"
           >
-            <service.icon size={36} strokeWidth={2.5} />
+            <service.icon size={32} />
           </motion.div>
 
           <h3 className="text-3xl font-bold mb-6 text-slate-900 tracking-tight">{service.title}</h3>
@@ -159,8 +180,8 @@ const ServiceCard = ({ service, index }) => {
           
           <div className="mt-auto flex items-center text-primary font-bold group">
             <span className="mr-2">View Details</span>
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-              <ChevronRight size={20} strokeWidth={3} />
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+              <ChevronRight size={18} />
             </div>
           </div>
         </div>
@@ -172,8 +193,8 @@ const ServiceCard = ({ service, index }) => {
         >
           <AnimatedNodes isFlipped={isFlipped} />
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-              <service.icon size={28} strokeWidth={2.5} className="text-blue-300" />
+            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+              <service.icon size={24} className="text-blue-300" />
             </div>
             <h3 className="text-2xl font-bold">{service.title}</h3>
           </div>

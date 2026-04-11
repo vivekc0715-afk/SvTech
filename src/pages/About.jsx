@@ -61,7 +61,7 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-full border border-primary-100"
           >
-            <Award className="w-5 h-5 text-primary" strokeWidth={2.5} />
+            <Award className="w-5 h-5 text-primary" />
             <span className="text-sm font-medium text-primary">Est. 2019 • Bhubaneswar, India</span>
           </motion.div>
           
@@ -85,7 +85,7 @@ const About = () => {
           <div className="flex flex-wrap justify-center gap-8 pt-8 text-sm font-medium text-text-secondary">
             {['ISO Certified', 'GDPR Compliant', 'AWS Partner', 'Microsoft Gold Partner'].map(item => (
               <div key={item} className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-success" strokeWidth={2.5} />
+                <CheckCircle className="w-5 h-5 text-success" />
                 <span>{item}</span>
               </div>
             ))}
@@ -100,78 +100,81 @@ const About = () => {
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              className="space-y-10"
+              className="space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent-50 rounded-full border border-accent-100">
-                <Target className="w-5 h-5 text-accent" strokeWidth={2.5} />
-                <span className="text-sm font-medium text-accent uppercase tracking-wider">Our Story</span>
-              </div>
-              
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
-                A Journey Rooted in Innovation and <span className="gradient-text">Trust</span>
+              <h2 className="text-4xl lg:text-5xl font-bold">
+                Our <span className="gradient-text">Story</span>
               </h2>
-              
-              <div className="space-y-6 text-lg text-text-secondary leading-relaxed">
-                <p>
-                  SolvionTech Private Limited was founded in 2019 in the tech-forward city of Bhubaneswar. What started as a small group of passionate AI engineers has grown into a leading technology consulting firm.
-                </p>
-                <p>
-                  Our mission is simple: To empower businesses of all sizes with intelligent technology that drives meaningful impact. We believe AI should be accessible, ethical, and purpose-driven.
-                </p>
-              </div>
-
-              <div className="flex gap-4">
-                <Link to="/contact" className="btn-primary">
-                  Work With Us
-                  <ArrowRight className="ml-2" strokeWidth={2.5} />
-                </Link>
+              <div className="space-y-4 text-lg text-text-secondary leading-relaxed">
+                <p>Founded in 2019, Infininza Innovation began its journey in Bhubaneswar as a small yet ambitious technology studio driven by a passion for intelligent solutions.</p>
+                <p>In 2025, Infininza Innovation was reborn as SolvionTech, a name that reflects our purpose—delivering smart, scalable and future-ready digital solutions.</p>
+                <p>Today, SolvionTech empowers startups, SMBs, and enterprises with AI-driven platforms that don't just support growth, but redefine how businesses operate.</p>
               </div>
             </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="relative aspect-square rounded-[2.5rem] overflow-hidden group shadow-2xl"
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              className="relative"
             >
               <img 
-                src="/images/story-image-new.jpeg" 
-                alt="Our Office Culture" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                src="/images/work.webp" 
+                alt="Our Workspace"
+                className="rounded-3xl shadow-2xl w-full h-auto object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#10102e]/80 to-transparent" />
-              <div className="absolute bottom-10 left-10 p-8 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20">
-                <div className="text-white text-3xl font-bold mb-2">150+</div>
-                <div className="text-white/80 text-sm">Projects Delivered Globally</div>
+              <div className="absolute -bottom-10 -right-10 bg-white p-8 rounded-2xl shadow-xl hidden md:block">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center text-white">
+                    <Users size={32} />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-primary">10+</p>
+                    <p className="text-sm text-text-secondary">Expert Team Members</p>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Values Grid */}
-      <section className="section bg-[#050510] text-white">
-        <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-20 space-y-6">
-            <h2 className="text-4xl lg:text-5xl font-bold">The <span className="gradient-text">Principles</span> We Live By</h2>
-            <p className="text-gray-400 text-lg">
-              Our core values guide every decision we make, from the technologies we choose to the team members we hire.
-            </p>
+      {/* Mission & Values */}
+      <section className="section bg-surface">
+        <div className="container-custom space-y-20">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="bg-primary p-12 rounded-[32px] text-white space-y-6"
+            >
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                <Target size={32} className="text-blue-100" />
+              </div>
+              <h3 className="text-3xl font-bold">Our Mission</h3>
+              <p className="text-xl text-blue-50 leading-relaxed font-light">
+                SolvionTech delivers intelligent AI-driven solutions that transform operations, elevate decision-making, and accelerate sustainable growth. We believe in innovation without complexity, premium quality without pretension, and AI built to produce real results.
+              </p>
+            </motion.div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {values.map((value, i) => (
+            {values.map((v, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="p-10 rounded-3xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all group"
+                whileHover={{ y: -5 }}
+                className="bg-white p-10 rounded-3xl border border-border shadow-sm hover:shadow-xl hover:border-primary/20 transition-all group"
               >
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary/20 transition-all border border-primary/20">
-                  <value.icon className="w-8 h-8 text-primary" strokeWidth={2.5} />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{value.desc}</p>
+                <motion.div 
+                  whileHover={{ scale: 1.1, rotate: 10 }}
+                  className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300"
+                >
+                  <v.icon size={28} />
+                </motion.div>
+                <h4 className="text-2xl font-bold mb-4">{v.title}</h4>
+                <p className="text-text-secondary leading-relaxed">{v.desc}</p>
               </motion.div>
             ))}
           </div>

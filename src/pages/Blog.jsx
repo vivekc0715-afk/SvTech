@@ -4,6 +4,7 @@ import {
   User, Mail, Layout, Cpu, Globe, BarChart, Shield, X, RotateCcw
 } from 'lucide-react'
 import { useState } from 'react'
+import CustomDropdown from '../components/CustomDropdown'
 import { Link } from 'react-router-dom'
 
 const Blog = () => {
@@ -131,18 +132,18 @@ const Blog = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-full border border-primary-100 mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-full border border-primary-100"
           >
-            <Layout className="w-5 h-5 text-primary" strokeWidth={2.5} />
-            <span className="text-sm font-medium text-primary uppercase tracking-wider">Insights & News</span>
+            <Calendar className="w-5 h-5 text-primary" />
+            <span className="text-sm font-medium text-primary uppercase tracking-wider">Thought Leadership</span>
           </motion.div>
           
           <motion.h1 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-5xl lg:text-7xl font-bold leading-tight mb-6"
+            className="text-5xl lg:text-7xl font-bold leading-tight"
           >
-            Our <span className="gradient-text">Perspectives</span> on AI
+            Insights on <span className="gradient-text">AI & Digital Innovation</span>
           </motion.h1>
           
           <motion.p 
@@ -151,48 +152,61 @@ const Blog = () => {
             transition={{ delay: 0.2 }}
             className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed"
           >
-            Explore our latest thinking on AI, digital strategy, and the future of business transformation.
+            Expert perspectives on AI transformation, digital strategy, and business innovation. Stay ahead with actionable insights from industry leaders.
           </motion.p>
+
+          <div className="max-w-3xl mx-auto">
+            <div className="relative">
+              <input 
+                type="text" 
+                placeholder="Search articles, topics, or authors..." 
+                className="w-full pl-14 pr-4 py-5 bg-white rounded-2xl shadow-xl shadow-primary/5 border-none ring-0 focus:ring-2 focus:ring-primary/20 transition-all text-lg"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search className="w-6 h-6 text-text-secondary absolute left-5 top-1/2 -translate-y-1/2" />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Search & Filters */}
-      <section className="py-12 bg-white border-y border-gray-100 sticky top-20 z-40 shadow-sm">
+      {/* Filter Bar */}
+      <section className="sticky top-20 z-30 py-6 bg-white/80 backdrop-blur-md border-b border-border">
         <div className="container-custom">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setFilter(cat.id)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
+                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
                     filter === cat.id 
-                    ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-105' 
-                    : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                    ? 'bg-primary text-white shadow-lg shadow-primary/30' 
+                    : 'bg-surface text-text-secondary hover:bg-primary/5 hover:text-primary'
                   }`}
                 >
                   {cat.label}
                 </button>
               ))}
             </div>
-            
-            <div className="flex items-center gap-4 w-full lg:w-auto">
-              <div className="relative flex-grow lg:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} strokeWidth={2.5} />
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                />
-              </div>
+
+            <div className="flex items-center gap-4">
               <button 
                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                className={`p-3 rounded-2xl border transition-all ${showAdvancedFilters ? 'bg-primary border-primary text-white' : 'bg-white border-gray-200 text-gray-400 hover:border-primary hover:text-primary'}`}
+                className={`flex items-center gap-2 px-5 py-2 rounded-xl border transition-all font-bold text-sm ${
+                  showAdvancedFilters ? 'bg-primary text-white border-primary' : 'bg-white text-text-primary border-border hover:border-primary/30'
+                }`}
               >
-                <Filter size={20} strokeWidth={2.5} />
+                <Filter size={18} />
+                Filters
               </button>
+              <div className="w-48">
+                <CustomDropdown
+                  placeholder="Sort By"
+                  options={['Latest First', 'Oldest First', 'Most Popular']}
+                  onChange={(val) => console.log('Sort by:', val)}
+                />
+              </div>
             </div>
           </div>
 
@@ -205,51 +219,45 @@ const Blog = () => {
                 className="overflow-hidden"
               >
                 <div className="pt-8 grid md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
-                      <User size={14} /> Author
-                    </label>
-                    <select 
-                      className="w-full p-3 bg-surface rounded-xl border-none text-sm font-medium"
-                      value={selectedAuthor}
-                      onChange={(e) => setSelectedAuthor(e.target.value)}
-                    >
-                      <option value="">All Authors</option>
-                      <option value="tech-desk">Tech Desk</option>
-                      <option value="emily-watson">Emily Watson</option>
-                      <option value="michael-rodriguez">Michael Rodriguez</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
-                      <Calendar size={14} /> Date Range
-                    </label>
-                    <select 
-                      className="w-full p-3 bg-surface rounded-xl border-none text-sm font-medium"
-                      value={selectedDateRange}
-                      onChange={(e) => setSelectedDateRange(e.target.value)}
-                    >
-                      <option value="">All Time</option>
-                      <option value="week">Past Week</option>
-                      <option value="month">Past Month</option>
-                      <option value="year">Past Year</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-2">
-                      <Clock size={14} /> Reading Time
-                    </label>
-                    <select 
-                      className="w-full p-3 bg-surface rounded-xl border-none text-sm font-medium"
-                      value={selectedReadingTime}
-                      onChange={(e) => setSelectedReadingTime(e.target.value)}
-                    >
-                      <option value="">Any Length</option>
-                      <option value="short">Under 5 min</option>
-                      <option value="medium">5-10 min</option>
-                      <option value="long">10+ min</option>
-                    </select>
-                  </div>
+                  <CustomDropdown
+                    label="Author"
+                    icon={User}
+                    value={selectedAuthor}
+                    onChange={(val) => setSelectedAuthor(val)}
+                    placeholder="All Authors"
+                    options={[
+                      { label: 'All Authors', value: '' },
+                      { label: 'Tech Desk', value: 'tech-desk' },
+                      { label: 'Emily Watson', value: 'emily-watson' },
+                      { label: 'Michael Rodriguez', value: 'michael-rodriguez' }
+                    ]}
+                  />
+                  <CustomDropdown
+                    label="Date Range"
+                    icon={Calendar}
+                    value={selectedDateRange}
+                    onChange={(val) => setSelectedDateRange(val)}
+                    placeholder="All Time"
+                    options={[
+                      { label: 'All Time', value: '' },
+                      { label: 'Past Week', value: 'week' },
+                      { label: 'Past Month', value: 'month' },
+                      { label: 'Past Year', value: 'year' }
+                    ]}
+                  />
+                  <CustomDropdown
+                    label="Reading Time"
+                    icon={Clock}
+                    value={selectedReadingTime}
+                    onChange={(val) => setSelectedReadingTime(val)}
+                    placeholder="Any Length"
+                    options={[
+                      { label: 'Any Length', value: '' },
+                      { label: 'Under 5 min', value: 'short' },
+                      { label: '5-10 min', value: 'medium' },
+                      { label: '10+ min', value: 'long' }
+                    ]}
+                  />
                 </div>
                 <div className="flex gap-3 mt-8">
                   <button className="btn-primary px-8 py-3">Apply Filters</button>
@@ -290,42 +298,41 @@ const Blog = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#10102e] via-transparent to-transparent hidden lg:block" />
               </div>
-              <div className="p-10 lg:p-20 flex flex-col justify-center space-y-8 relative z-10">
+              <div className="p-8 lg:p-16 flex flex-col justify-center text-white space-y-6">
                 <div className="flex items-center gap-4">
-                  <span className="px-4 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-bold uppercase tracking-widest border border-primary/30">
-                    Featured
+                  <span className="px-4 py-1 bg-primary text-[10px] font-black uppercase tracking-widest rounded-full">
+                    {featuredArticle.category}
                   </span>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <Calendar size={14} strokeWidth={2.5} />
-                    <span>{featuredArticle.date}</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-400 font-medium">
+                    <Calendar size={14} /> {featuredArticle.date}
+                    <span className="mx-2">•</span>
+                    <Clock size={14} /> {featuredArticle.readTime}
                   </div>
                 </div>
-                
-                <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight">
-                  <a href={featuredArticle.link} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                    {featuredArticle.title}
-                  </a>
-                </h2>
-                
+                <h3 className="text-3xl lg:text-5xl font-bold leading-tight group-hover:text-primary transition-colors">
+                  <a href={featuredArticle.link} target="_blank" rel="noopener noreferrer">{featuredArticle.title}</a>
+                </h3>
                 <p className="text-gray-400 text-lg leading-relaxed line-clamp-3">
                   {featuredArticle.desc}
                 </p>
-
-                <div className="flex items-center justify-between pt-8 border-t border-white/10">
-                  <div className="flex items-center gap-4">
-                    <img src={featuredArticle.authorImage} alt={featuredArticle.author} className="w-12 h-12 rounded-xl object-cover" />
-                    <div>
-                      <div className="text-white font-bold">{featuredArticle.author}</div>
-                      <div className="text-gray-500 text-sm">{featuredArticle.authorRole}</div>
-                    </div>
+                <div className="flex items-center gap-4 pt-4">
+                  <img src={featuredArticle.authorImage} alt={featuredArticle.author} className="w-14 h-14 rounded-full border-2 border-white/20" />
+                  <div>
+                    <h4 className="font-bold text-white">{featuredArticle.author}</h4>
+                    <p className="text-sm text-gray-500">{featuredArticle.authorRole}</p>
                   </div>
+                </div>
+                <div className="pt-6">
                   <a 
-                    href={featuredArticle.link}
-                    target="_blank"
+                    href={featuredArticle.link} 
+                    target="_blank" 
                     rel="noopener noreferrer"
-                    className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white hover:bg-primary transition-all group/btn"
+                    className="inline-flex items-center gap-3 font-bold text-primary group/btn"
                   >
-                    <ArrowRight size={24} className="group-hover/btn:translate-x-1 transition-transform" strokeWidth={2.5} />
+                    Read Full Story
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center transition-all group-hover/btn:bg-primary group-hover/btn:text-white">
+                      <ArrowRight size={20} />
+                    </div>
                   </a>
                 </div>
               </div>
@@ -371,35 +378,26 @@ const Blog = () => {
                       </span>
                     </div>
                   </div>
-                    <div className="p-10 flex-grow flex flex-col">
-                      <div className="flex items-center gap-4 text-xs font-bold text-gray-400 mb-6">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar size={14} strokeWidth={2.5} />
-                          <span>{article.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Clock size={14} strokeWidth={2.5} />
-                          <span>{article.readTime}</span>
-                        </div>
-                      </div>
-
-                      <h3 className="text-2xl font-bold mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
-                        {article.title}
-                      </h3>
-                      <p className="text-text-secondary leading-relaxed mb-8 line-clamp-3">
-                        {article.desc}
-                      </p>
-
-                      <div className="pt-8 border-t border-gray-100 mt-auto flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <img src={article.authorImage} alt={article.author} className="w-10 h-10 rounded-xl object-cover" />
-                          <div className="text-sm font-bold text-gray-900">{article.author}</div>
-                        </div>
-                        <Link to="#" className="p-3 bg-gray-50 rounded-xl text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
-                          <ArrowRight size={20} strokeWidth={2.5} />
-                        </Link>
+                  <div className="p-8 flex-1 flex flex-col space-y-4">
+                    <div className="flex items-center gap-4 text-xs font-bold text-text-secondary uppercase tracking-widest">
+                      <span>{article.date}</span>
+                      <span>•</span>
+                      <span>{article.readTime}</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 group-hover:text-primary transition-colors leading-tight">
+                      <a href="javascript:void(0)">{article.title}</a>
+                    </h3>
+                    <p className="text-text-secondary leading-relaxed line-clamp-3">
+                      {article.desc}
+                    </p>
+                    <div className="pt-6 mt-auto border-t border-border flex items-center gap-3">
+                      <img src={article.authorImage} alt={article.author} className="w-10 h-10 rounded-full grayscale group-hover:grayscale-0 transition-all" />
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900">{article.author}</h4>
+                        <p className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">{article.authorRole}</p>
                       </div>
                     </div>
+                  </div>
                 </motion.article>
               ))}
             </AnimatePresence>
@@ -443,7 +441,7 @@ const Blog = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="w-16 h-16 bg-primary/10 rounded-[20px] flex items-center justify-center text-primary">
-                  <Mail size={32} strokeWidth={2.5} />
+                  <Mail size={32} />
                 </div>
                 <h2 className="text-4xl font-bold text-gray-900 leading-tight">Stay Ahead with Expert Insights</h2>
                 <p className="text-lg text-text-secondary">Join 5,000+ professionals receiving weekly AI insights and digital strategy tips.</p>

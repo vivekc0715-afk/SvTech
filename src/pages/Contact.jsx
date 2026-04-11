@@ -5,7 +5,7 @@ import {
   Linkedin, Twitter, Github, Facebook, X, Info
 } from 'lucide-react'
 import { useState } from 'react'
-import { API_BASE_URL } from '../utils/api'
+import CustomDropdown from '../components/CustomDropdown'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -54,13 +54,19 @@ const Contact = () => {
     setFormStatus('submitting')
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/messages`, {
+      const response = await fetch('http://localhost:5000/api/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
-      })
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.service || 'Service Inquiry',
+          message: formData.message
+        }),
+      });
 
       if (response.ok) {
         setFormStatus('success')
@@ -73,8 +79,8 @@ const Contact = () => {
       } else {
         setFormStatus('error')
       }
-    } catch (error) {
-      console.error('Error sending message:', error)
+    } catch (err) {
+      console.error('Contact error:', err);
       setFormStatus('error')
     }
   }
@@ -89,7 +95,7 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-full border border-primary-100 mb-6"
           >
-            <MessageSquare className="w-5 h-5 text-primary" strokeWidth={2.5} />
+            <MessageSquare className="w-5 h-5 text-primary" />
             <span className="text-sm font-medium text-primary uppercase tracking-wider">We're Here to Help</span>
           </motion.div>
           
@@ -114,7 +120,7 @@ const Contact = () => {
             {[
               { icon: Phone, label: 'Call Us', val: '+91 70086 79523', link: 'tel:+917008679523' },
               { icon: Mail, label: 'Email Us', val: 'solviontech@gmail.com', link: 'mailto:solviontech@gmail.com' },
-              { icon: MessageSquare, label: 'Live Chat', val: 'Chat Now', action: () => window.dispatchEvent(new CustomEvent('openChat')) },
+              { icon: MessageSquare, label: 'Live Chat', val: 'Chat Now', action: () => alert('Launching chat...') },
             ].map((item, i) => (
               <motion.a 
                 key={i}
@@ -126,7 +132,7 @@ const Contact = () => {
                 className="group p-6 bg-white rounded-3xl border border-white shadow-xl shadow-primary/5 hover:shadow-2xl hover:-translate-y-1 transition-all text-left"
               >
                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-all">
-                  <item.icon size={24} strokeWidth={2.5} />
+                  <item.icon size={24} />
                 </div>
                 <div className="text-xs font-black text-text-secondary uppercase tracking-widest mb-1">{item.label}</div>
                 <div className="font-bold text-gray-900 group-hover:text-primary transition-colors">{item.val}</div>
@@ -186,34 +192,33 @@ const Contact = () => {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-text-primary ml-1">Service Interest</label>
-                    <select 
-                      required 
-                      className="w-full p-4 bg-white rounded-2xl border-none ring-0 focus:ring-2 focus:ring-primary/20 appearance-none"
-                      value={formData.service}
-                      onChange={(e) => setFormData({...formData, service: e.target.value})}
-                    >
-                      <option value="">Select a service</option>
-                      <option value="ai">AI Integration</option>
-                      <option value="web">Web Development</option>
-                      <option value="cloud">Cloud Solutions</option>
-                      <option value="data">Data Analytics</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-text-primary ml-1">Budget Range</label>
-                    <select 
-                      className="w-full p-4 bg-white rounded-2xl border-none ring-0 focus:ring-2 focus:ring-primary/20 appearance-none"
-                      value={formData.budget}
-                      onChange={(e) => setFormData({...formData, budget: e.target.value})}
-                    >
-                      <option value="">Select budget</option>
-                      <option value="low">Under ₹100k</option>
-                      <option value="mid">₹100k - ₹500k</option>
-                      <option value="high">Over ₹500k</option>
-                    </select>
-                  </div>
+                  <CustomDropdown
+                    label="Service Interest"
+                    icon={Shield}
+                    placeholder="Select a service"
+                    value={formData.service}
+                    onChange={(val) => setFormData({...formData, service: val})}
+                    options={[
+                      { label: 'AI Integration', value: 'ai' },
+                      { label: 'Web Development', value: 'web' },
+                      { label: 'Cloud Solutions', value: 'cloud' },
+                      { label: 'Data Analytics', value: 'data' }
+                    ]}
+                  />
+                  <CustomDropdown
+                    label="Budget Range"
+                    icon={Mail}
+                    placeholder="Select budget"
+                    value={formData.budget}
+                    onChange={(val) => setFormData({...formData, budget: val})}
+                    options={[
+                      'Under 10000',
+                      '10000 - 15,000',
+                      '15,000 - 20,000',
+                      '20,000 - 25,000',
+                      'Over 25,000'
+                    ]}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -245,7 +250,7 @@ const Contact = () => {
                   className="btn-primary w-full py-5 text-lg shadow-xl shadow-primary/20 flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                   {formStatus === 'submitting' ? 'Sending...' : 'Send Message'}
-                  <Send size={20} strokeWidth={2.5} />
+                  <Send size={20} />
                 </button>
 
                 <AnimatePresence>
@@ -255,7 +260,7 @@ const Contact = () => {
                       animate={{ opacity: 1, y: 0 }}
                       className="p-4 bg-success/10 text-success rounded-2xl flex items-center gap-3 font-bold"
                     >
-                      <CheckCircle2 size={24} strokeWidth={2.5} />
+                      <CheckCircle2 size={24} />
                       Message sent successfully! We'll be in touch.
                     </motion.div>
                   )}
@@ -272,7 +277,7 @@ const Contact = () => {
                 className="space-y-8"
               >
                 <div>
-                  <h2 className="text-4xl font-bold mb-4">Visit Our <span className="gradient-text">Studio</span></h2>
+                  <h2 className="text-4xl font-bold mb-4">Visit Our <span className="gradient-text">Office</span></h2>
                   <p className="text-xl text-text-secondary leading-relaxed">Stop by for a coffee and discuss how we can transform your business with AI.</p>
                 </div>
 
@@ -284,7 +289,7 @@ const Contact = () => {
                   ].map((info, i) => (
                     <div key={i} className="flex gap-6 p-6 rounded-[32px] bg-surface border border-border">
                       <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm flex-shrink-0">
-                        <info.icon size={28} strokeWidth={2.5} />
+                        <info.icon size={28} />
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900 mb-1">{info.title}</h4>
@@ -308,7 +313,7 @@ const Contact = () => {
                     rel="noopener noreferrer"
                     className="btn bg-white text-gray-900 border-none px-8 flex items-center gap-2 font-bold shadow-xl"
                   >
-                    Get Directions <MapPin size={18} strokeWidth={2.5} />
+                    Get Directions <MapPin size={18} />
                   </a>
                 </div>
               </div>
@@ -325,7 +330,7 @@ const Contact = () => {
                     href={s.link} 
                     className="w-14 h-14 rounded-2xl border border-border flex items-center justify-center text-text-secondary hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
                   >
-                    <s.icon size={24} strokeWidth={2.5} />
+                    <s.icon size={24} />
                   </a>
                 ))}
               </div>
@@ -360,7 +365,7 @@ const Contact = () => {
                 >
                   <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors pr-8">{faq.q}</h3>
                   <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${activeFaq === i ? 'bg-primary text-white rotate-180' : 'bg-surface text-text-secondary'}`}>
-                    <ChevronDown size={20} strokeWidth={2.5} />
+                    <ChevronDown size={20} />
                   </div>
                 </button>
                 <AnimatePresence>

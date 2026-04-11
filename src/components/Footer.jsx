@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Linkedin, Twitter, Github, Mail, MapPin, Phone } from 'lucide-react'
+import { Linkedin, Twitter, Mail, MapPin, Phone, Facebook , Instagram} from 'lucide-react'
 
 const Footer = () => {
   return (
@@ -9,9 +9,9 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center">
-              <img 
-                src="/images/Solvion_tech-removebg-preview.png" 
-                alt="SolvionTech Logo" 
+              <img
+                src="/images/Solvion_tech-removebg-preview.png"
+                alt="SolvionTech Logo"
                 className="h-40 w-auto object-contain"
               />
             </Link>
@@ -19,13 +19,13 @@ const Footer = () => {
               Your trusted partner for AI-driven business solutions and digital transformation.
             </p>
             <div className="flex gap-4">
-              {[Linkedin, Twitter, Github].map((Icon, i) => (
-                <a 
-                  key={i} 
-                  href="#" 
-                  className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center hover:bg-primary transition-all hover:scale-110 border border-white/5"
+              {[Linkedin, Twitter, Facebook, Instagram].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="https://in.linkedin.com/company/solvion-tech"
+                  className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center hover:bg-primary transition-colors"
                 >
-                  <Icon size={22} strokeWidth={2} />
+                  <Icon size={20} />
                 </a>
               ))}
             </div>
@@ -60,15 +60,15 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-8 text-gray-200">Contact Us</h3>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
-                <MapPin className="text-primary shrink-0" size={22} strokeWidth={2.5} />
+                <MapPin className="text-primary shrink-0" size={20} />
                 <span className="text-gray-400">Bhubaneswar, Odisha, India</span>
               </li>
               <li className="flex items-start gap-4">
-                <Mail className="text-primary shrink-0" size={22} strokeWidth={2.5} />
+                <Mail className="text-primary shrink-0" size={20} />
                 <a href="mailto:solviontech@gmail.com" className="text-gray-400 hover:text-white transition-colors">solviontech@gmail.com</a>
               </li>
               <li className="flex items-start gap-4">
-                <Phone className="text-primary shrink-0" size={22} strokeWidth={2.5} />
+                <Phone className="text-primary shrink-0" size={20} />
                 <span className="text-gray-400">+91 70086 79523</span>
               </li>
             </ul>

@@ -1,10 +1,9 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, CheckCircle, Cpu, Code, BarChart, Cloud, Smartphone, Shield, Zap } from 'lucide-react'
+import { ArrowRight, CheckCircle, Cpu, Code, BarChart, Cloud, Smartphone, Shield, Zap, Star } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import ProcessSection from '../components/ProcessSection'
 import ServiceCards from '../components/ServiceCards'
-import { API_BASE_URL } from '../utils/api'
 
 const Counter = ({ target, duration = 2 }) => {
   const [count, setCount] = useState(0)
@@ -28,32 +27,32 @@ const Counter = ({ target, duration = 2 }) => {
 }
 
 const Home = () => {
-  const [testimonials, setTestimonials] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/testimonials`)
-      .then(res => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
-      })
-      .then(data => {
-        setTestimonials(data)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Error fetching testimonials:', err)
-        setError('Could not load testimonials.')
-        setLoading(false)
-      })
-  }, [])
-
   const stats = [
     { label: 'Projects Delivered', value: '25' },
     { label: 'Happy Clients', value: '20' },
     { label: 'Team Members', value: '50' },
     { label: 'Years Experience', value: '8' },
+  ]
+
+  const testimonials = [
+    {
+      quote: "Beespace delivers innovative solutions with excellent support, user-friendly design, and reliable performance, making it a great choice for modern business needs.",
+      author: "Aryan Kumare",
+      role: "Project Manager, BeeSpace",
+      image: "https://img.rocket.new/generatedImages/rocket_gen_img_1663c79be-1763294482755.png"
+    },
+    {
+      quote: "SolvionTech’s Think Agent transformed our operations, delivering intelligent automation, faster decisions, and scalable growth while significantly improving efficiency and reducing costs.",
+      author: "Cloyd Brandt",
+      role: "Project Manager, CVS Health",
+      image: "https://img.rocket.new/generatedImages/rocket_gen_img_19c728851-1763300357390.png"
+    },
+    {
+      quote: "The Nifty PM system built by SolvionTech delivered outstanding results, combining precision, smart workflows, and seamless usability with unmatched attention to quality.",
+      author: "Skyler Calibey",
+      role: "Co-Founder, Nifty PM",
+      image: "https://img.rocket.new/generatedImages/rocket_gen_img_1fc66bbb3-1763299251535.png"
+    }
   ]
 
   return (
@@ -62,32 +61,32 @@ const Home = () => {
       <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50">
         <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-        
+
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               className="space-y-8"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-full border border-primary-100">
-                <Zap className="w-5 h-5 text-primary" strokeWidth={2.5} />
+                <Zap className="w-5 h-5 text-primary" />
                 <span className="text-sm font-medium text-primary uppercase tracking-wider">AI-Powered Solutions</span>
               </div>
-              
+
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                 Your <span className="gradient-text">Business Partner</span> in the Digital Age
               </h1>
-              
+
               <p className="text-xl text-text-secondary leading-relaxed">
                 Transform your business with intelligent AI-driven solutions. We combine cutting-edge technology with strategic expertise to deliver measurable results for SMBs and enterprises.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/contact" className="btn-primary text-lg px-8 py-4">
                   Start Your Journey
-                  <ArrowRight className="ml-2" strokeWidth={2.5} />
+                  <ArrowRight className="ml-2" />
                 </Link>
                 <Link to="/services" className="inline-flex items-center justify-center px-8 py-4 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary/5 transition-all">
                   Explore Services
@@ -97,27 +96,27 @@ const Home = () => {
               <div className="flex flex-wrap items-center gap-6 pt-4">
                 {['ISO Certified', 'GDPR Compliant', '24/7 Support'].map((item) => (
                   <div key={item} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-success" strokeWidth={2.5} />
+                    <CheckCircle className="w-5 h-5 text-success" />
                     <span className="text-sm text-text-secondary font-medium">{item}</span>
                   </div>
                 ))}
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
               className="relative"
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  src="/images/home-hero-new.jpeg" 
-                  alt="SolvionTech Office"
+                <img
+                  src="/images/recption.webp"
+                  alt="Reception"
                   className="w-full h-auto object-cover"
                 />
               </div>
-              <motion.div 
+              <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -143,7 +142,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
             {stats.map((stat, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -179,35 +178,29 @@ const Home = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {loading ? (
-              <div className="col-span-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-              </div>
-            ) : (
-              testimonials.map((t, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white p-8 rounded-2xl shadow-sm border border-border flex flex-col justify-between"
-                >
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white p-8 rounded-2xl shadow-sm border border-border flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex text-warning mb-6 gap-0.5">
+                    {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
+                  </div>
+                  <p className="text-lg text-text-primary italic mb-8 leading-relaxed">"{t.quote}"</p>
+                </div>
+                <div className="flex items-center gap-4 border-t border-border pt-6">
+                  <img src={t.image} alt={t.author} className="w-12 h-12 rounded-full object-cover" />
                   <div>
-                    <div className="flex text-warning mb-6">
-                      {[...Array(5)].map((_, i) => <Zap key={i} size={16} fill="currentColor" />)}
-                    </div>
-                    <p className="text-lg text-text-primary italic mb-8 leading-relaxed">"{t.quote}"</p>
+                    <h4 className="font-bold text-gray-900">{t.author}</h4>
+                    <p className="text-sm text-text-secondary">{t.role}</p>
                   </div>
-                  <div className="flex items-center gap-4 border-t border-border pt-6">
-                    <img src={t.image_url} alt={t.author} className="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                      <h4 className="font-bold text-gray-900">{t.author}</h4>
-                      <p className="text-sm text-text-secondary">{t.role}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))
-            )}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

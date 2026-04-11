@@ -73,8 +73,8 @@ const ProcessCard = ({ step, index, progress }) => {
           {/* Icon Section */}
           <div className="relative">
             <div className={`w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br ${step.color} p-0.5 shadow-lg`}>
-              <div className="w-full h-full bg-[#10102e] rounded-[1.4rem] flex items-center justify-center relative overflow-hidden border border-white/5">
-                <step.icon className="w-12 h-12 md:w-16 md:h-16 text-white" strokeWidth={2.5} />
+              <div className="w-full h-full bg-[#10102e] rounded-[1.4rem] flex items-center justify-center relative overflow-hidden">
+                <step.icon className="w-12 h-12 md:w-16 md:h-16 text-white" />
                 {/* Floating Micro-icons */}
                 {step.subIcons.map((SubIcon, i) => (
                   <motion.div
@@ -88,13 +88,13 @@ const ProcessCard = ({ step, index, progress }) => {
                       repeat: Infinity,
                       ease: "easeInOut" 
                     }}
-                    className="absolute text-white/30 p-2"
+                    className="absolute text-white/20 p-2"
                     style={{ 
                       top: i === 0 ? '10%' : '60%', 
                       right: i === 0 ? '10%' : '10%' 
                     }}
                   >
-                    <SubIcon size={24} strokeWidth={2} />
+                    <SubIcon size={20} />
                   </motion.div>
                 ))}
               </div>

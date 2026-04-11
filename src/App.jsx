@@ -9,10 +9,9 @@ import Services from './pages/Services'
 import Blog from './pages/Blog'
 import Careers from './pages/Careers'
 import Contact from './pages/Contact'
-import AdminLogin from './pages/AdminLogin'
-import AdminDashboard from './pages/AdminDashboard'
+import Login from './pages/Admin/Login'
+import Dashboard from './pages/Admin/Dashboard'
 import CustomCursor from './components/CustomCursor'
-import ChatWidget from './components/ChatWidget'
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -23,29 +22,32 @@ const ScrollToTop = () => {
   return null
 }
 
-const AppContent = () => {
-  const location = useLocation()
-  const isAdminPage = location.pathname.startsWith('/admin')
+function AppContent() {
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith('/admin');
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {!isAdminPage && <Navbar />}
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        </Routes>
-      </main>
-      {!isAdminPage && <Footer />}
-      {!isAdminPage && location.pathname !== '/' && <ChatWidget />}
-    </div>
-  )
+    <>
+      <ScrollToTop />
+      <CustomCursor />
+      <div className="flex flex-col min-h-screen">
+        {!isAdminPath && <Navbar />}
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+          </Routes>
+        </main>
+        {!isAdminPath && <Footer />}
+      </div>
+    </>
+  );
 }
 
 function App() {
@@ -64,8 +66,6 @@ function App() {
 
   return (
     <Router>
-      <ScrollToTop />
-      <CustomCursor />
       <AppContent />
     </Router>
   )

@@ -31,7 +31,7 @@ const Navbar = () => {
       <header 
         className={`fixed top-0 left-1/2 -translate-x-1/2 z-[60] transition-all duration-500 ease-in-out w-full
           ${isScrolled 
-            ? 'top-4 max-w-[95%] 2xl:max-w-[1440px] bg-[#10102e]/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] py-1.5' 
+            ? 'top-4 max-w-[97%] 2xl:max-w-[1440px] bg-[#10102e]/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] py-2' 
             : 'top-0 max-w-full bg-[#050510]/90 backdrop-blur-md py-1.5 border-b border-white/5 shadow-xl'}
         `}
       >
@@ -42,7 +42,9 @@ const Navbar = () => {
               <img 
                 src="/images/Solvion_tech-removebg-preview.png" 
                 alt="SolvionTech Logo" 
-                className="h-20 md:h-28 w-auto object-contain origin-left transition-transform group-hover:scale-105"
+                className={`w-auto object-contain origin-left transition-all duration-500 group-hover:scale-105 ${
+                  isScrolled ? 'h-16 md:h-20' : 'h-20 md:h-28'
+                }`}
               />
             </Link>
 
@@ -74,7 +76,7 @@ const Navbar = () => {
               }`}
               onClick={() => setIsOpen(!isOpen)}
             >
-              {isOpen ? <X size={28} strokeWidth={2.5} /> : <Menu size={28} strokeWidth={2.5} />}
+              {isOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
           </div>
         </nav>

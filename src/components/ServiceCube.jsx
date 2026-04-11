@@ -142,9 +142,9 @@ const ServiceCube = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 text-blue-600 font-bold text-sm tracking-wider uppercase shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 text-blue-600 font-bold text-sm tracking-wider uppercase"
           >
-            <Zap size={18} strokeWidth={2.5} />
+            <Zap size={16} />
             Our Dynamic Expertise
           </motion.div>
           <motion.h2 
@@ -234,6 +234,17 @@ const ServiceCube = () => {
                   <p className="text-lg text-slate-500 mb-10 leading-relaxed">
                     {focusedService.desc}
                   </p>
+
+                  <div className="space-y-6">
+                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Technological Stack</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {focusedService.tech.map((tag, i) => (
+                        <span key={i} className="px-4 py-2 bg-blue-50/50 border border-blue-100 rounded-xl text-sm font-bold text-blue-600">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
                   <motion.button
                     whileHover={{ scale: 1.02 }}
